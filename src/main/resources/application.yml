@@ -1,0 +1,16 @@
+
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: @spring.profiles.active@
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+
+  hibernate:
+    dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+
+  jpa:
+    open-in-view: false

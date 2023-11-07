@@ -1,0 +1,13 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/leaders_app
+    username: user
+    password: qwerty12
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  error:
+    include-message: always

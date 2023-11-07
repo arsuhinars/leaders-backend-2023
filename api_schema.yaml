@@ -1,0 +1,895 @@
+openapi: "3.0.3"
+
+
+info:
+  title: Сервис автоматического распределения задач для выездных сотрудников банка
+  version: "1.0"
+
+
+servers:
+  - url: http://localhost:8080
+    description: Debug server
+
+
+tags:
+  - name: Accounts
+  - name: Agent points
+  - name: Tasks manual
+  - name: Employees
+  - name: Tasks
+
+
+security:
+  - basic: []
+
+
+paths:
+  /accounts:
+    post:
+      tags: [ Accounts ]
+      summary: Создать новый аккаунт
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: createAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_account"
+      responses:
+        "201":
+          description: Операция выполненная успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "409":
+          description: Аккаунт с данным логином уже существует
+
+  /accounts/{id}:
+    get:
+      tags: [ Accounts ]
+      summary: Получить аккаунт по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`.  
+        Также метод доступен, если id текущего пользователя равен запрашиваемому id
+      operationId: getAccountById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненная успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Accounts ]
+      summary: Обновить аккаунт по id
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: updateAccountById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_account"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    delete:
+      tags: [ Accounts ]
+      summary: Удалить аккаунт по id
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: deleteAccountById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+  
+  /accounts/login/{login}:
+    get:
+      tags: [ Accounts ]
+      summary: Получить аккаунт по логину
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`.  
+        Также метод доступен, если логин текущего пользователя равен запрашиваемому логину
+      operationId: getAccountByLogin
+      parameters:
+        - $ref: "#/components/parameters/login"
+      responses:
+        "200":
+          description: Операция выполненная успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Accounts ]
+      summary: Обновить аккаунт по логину
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: updateAccountByLogin
+      parameters:
+        - $ref: "#/components/parameters/login"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_account"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    delete:
+      tags: [ Accounts ]
+      summary: Удалить аккаунт по логину
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: deleteAccountByLogin
+      parameters:
+        - $ref: "#/components/parameters/login"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+    
+  /accounts/{id}/password:
+    put:
+      tags: [ Accounts ]
+      summary: Обновить пароль аккаунта
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: updateAccountPasswordById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_account_password"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /accounts/all:
+    get:
+      tags: [ Accounts ]
+      summary: Получить список всех аккаунтов
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: getAllAccounts
+      parameters:
+        - $ref: "#/components/parameters/pagination_page"
+        - $ref: "#/components/parameters/pagination_size"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalItemsCount: { type: integer }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/account" }
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /accounts/current:
+    get:
+      tags: [ Accounts ]
+      summary: Получить текущий аккаунт пользователя
+      operationId: getCurrentAccount
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+
+  /agent_points:
+    post:
+      tags: [ Agent points ]
+      summary: Добавить агентскую точку
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: createAgentPoint
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/create_agent_point" }
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/agent_point"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /agent_points/all:
+    get:
+      tags: [ Agent points ]
+      summary: Получить список всех агентских точек
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getAllAgentPoints
+      parameters:
+        - $ref: "#/components/parameters/pagination_page"
+        - $ref: "#/components/parameters/pagination_size"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalItemsCount: { type: integer }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/agent_point" }
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /agent_points/{id}:
+    get:
+      tags: [ Agent points ]
+      summary: Получить агентскую точку по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getAgentPointById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/agent_point"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Agent points ]
+      summary: Получить агентскую точку по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: updateAgentPointById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_agent_point"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/agent_point"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    delete:
+      tags: [ Agent points ]
+      summary: Удалить агентскую точку по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: deleteAgentPointById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /tasks/departure/manual:
+    get:
+      tags: [ Tasks manual ]
+      summary: Получить справочник задачи выезда
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getTaskDepartureManual
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/departure_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+    put:
+      tags: [ Tasks manual ]
+      summary: Изменить справочник задачи выезда
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: updateTaskDepartureManual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/departure_task_manual"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/departure_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /tasks/tuition/manual:
+    get:
+      tags: [ Tasks manual ]
+      summary: Получить справочник задачи обучения
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getTaskTuitionManual
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tuition_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+    put:
+      tags: [ Tasks manual ]
+      summary: Изменить справочник задачи обучения
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: updateTaskTuitionManual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tuition_task_manual"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tuition_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /tasks/delivery/manual:
+    get:
+      tags: [ Tasks manual ]
+      summary: Получить справочник задачи доставки
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getTaskDeliveryManual
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/delivery_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+    put:
+      tags: [ Tasks manual ]
+      summary: Изменить справочник задачи доставки
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: updateTaskDeliveryManual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/delivery_task_manual"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/delivery_task_manual"
+        "403": { $ref: "#/components/responses/forbidden" }
+  
+  /employees/all:
+    get:
+      tags: [ Employees ]
+      summary: Получить список всех сотрудников
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: getAllEmployees
+      parameters:
+        - $ref: "#/components/parameters/pagination_page"
+        - $ref: "#/components/parameters/pagination_size"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalItemsCount: { type: integer }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/employee" }
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /employees/current:
+    get:
+      tags: [ Employees ]
+      summary: Получить текущего сотрудника
+      description: |
+        Требуемая роль: `EMPLOYEE`
+      operationId: getCurrentEmployee
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/employee"
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /employees/{id}:
+    get:
+      tags: [ Employees ]
+      summary: Получить сотрудника по id его аккаунта
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`  
+        Также метод доступен, если id текущего пользователя равен запрашиваемому id
+      operationId: getEmployeeById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/employee"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Employees ]
+      summary: Изменить сотрудника по id его аккаунта
+      description: |
+        Требуемая роль: `ADMIN`
+      operationId: updateEmployeeById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_employee"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/employee"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /tasks/generate:
+    post:
+      tags: [ Tasks ]
+      summary: Сформировать новый список задач
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+
+        При этом все текущие задачи будут отправлены в архив
+      operationId: generateTasks
+      responses:
+        "200":
+          description: Операция выполненна успешно
+        "403": { $ref: "#/components/responses/forbidden" }
+
+  /tasks:
+    post:
+      tags: [ Tasks ]
+      summary: Создать новую задачу
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: createTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/create_task"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /tasks/all:
+    get:
+      tags: [ Tasks ]
+      summary: Получить список всех задач
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+
+        Если роль пользователя `EMPLOYEE`, то возвращаются задачи только для данного сотрудника.
+        При этом параметры `employee_id`, `agent_point_id`, `archived` не играют никакой роли.
+        
+        Для сотрудника (в т.ч. если указан `employee_id`) всегда возращается отсортированными
+        по полю `order`. Для остальных - по `id`.
+      operationId: getAllTasks
+      parameters:
+        - $ref: "#/components/parameters/pagination_page"
+        - $ref: "#/components/parameters/pagination_size"
+        - name: employee_id
+          description: id сотрудника, для которого необходимо вернуть список задач
+          in: query
+          required: false
+          schema: { type: integer }
+        - name: agent_point_id
+          description: id агентной точки, для которой необходимо вернуть список задач
+          in: query
+          required: false
+          schema: { type: integer }
+        - name: archived
+          description: Получить заархивированные (удаленные) задачи
+          in: query
+          required: false
+          schema: { type: boolean, default: false }
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalItemsCount: { type: integer }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/task" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /tasks/{id}:
+    get:
+      tags: [ Tasks ]
+      summary: Получить задачу по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER` либо, если задача относиться к данному сотруднику.
+      operationId: getTaskById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Tasks ]
+      summary: Изменить задачу по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: updateTaskById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/update_task"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    delete:
+      tags: [ Tasks ]
+      summary: Удалить задачу по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER`
+      operationId: deleteTaskById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+  /tasks/{id}/status:
+    get:
+      tags: [ Tasks ]
+      summary: Получить статус задачи по id
+      description: |
+        Требуемая роль: `ADMIN` или `MANAGER` либо, если задача относиться к данному сотруднику.
+      operationId: getTaskStatusById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task_status"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+    put:
+      tags: [ Tasks ]
+      summary: Изменить статус задачи по id
+      description: |
+        Требуемая роль `EMPLOYEE` и задача относиться к данному сотруднику.
+      operationId: updateTaskStatusById
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/task_status"
+      responses:
+        "200":
+          description: Операция выполненна успешно
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task_status"
+        "403": { $ref: "#/components/responses/forbidden" }
+        "404": { $ref: "#/components/responses/not_found" }
+
+components:
+  schemas:
+    account_role:
+      title: AccountRole
+      type: string
+      enum: [ ADMIN, MANAGER, EMPLOYEE ]
+    create_account:
+      title: CreateAccount
+      type: object
+      properties:
+        login: { type: string, minLength: 8 }
+        password: { type: string, minLength: 8 }
+        fullName: { type: string }
+        role: { $ref: "#/components/schemas/account_role" }
+    update_account:
+      title: UpdateAccount
+      type: object
+      properties:
+        login: { type: string, minLength: 8 }
+        fullName: { type: string }
+        role: { $ref: "#/components/schemas/account_role" }
+    update_account_password:
+      title: UpdateAccountPassword
+      type: object
+      properties:
+        new_password: { type: string, minLength: 8 }
+    account:
+      title: Account
+      type: object
+      properties:
+        id: { type: integer }
+        login: { type: string }
+        fullName: { type: string }
+        role: { $ref: "#/components/schemas/account_role" }
+    agent_point_join_time:
+      title: AgentPointJoinTime
+      type: string
+      enum: [ YESTERDAY, LONG_AGO ]
+    create_agent_point:
+      title: CreateAgentPoint
+      type: object
+      properties:
+        address: { type: string }
+        joinTime: { $ref: "#/components/schemas/agent_point_join_time" }
+        materialsDelivered: { type: boolean }
+        cardIssuanceDaysPassed: { type: integer }
+        approvedAppsCount: { type: integer }
+        issuedCardsCount: { type: integer }
+    update_agent_point:
+      title: UpdateAgentPoint
+      type: object
+      properties:
+        address: { type: string }
+        joinTime: { $ref: "#/components/schemas/agent_point_join_time" }
+        materialsDelivered: { type: boolean }
+        cardIssuanceDaysPassed: { type: integer }
+        approvedAppsCount: { type: integer }
+        issuedCardsCount: { type: integer }
+    agent_point:
+      title: AgentPoint
+      type: object
+      properties:
+        id: { type: integer }
+        address: { type: string }
+        joinTime: { $ref: "#/components/schemas/agent_point_join_time" }
+        materialsDelivered: { type: boolean }
+        cardIssuanceDaysPassed: { type: integer }
+        approvedAppsCount: { type: integer }
+        issuedCardsCount: { type: integer }
+    task_priority:
+      title: TaskPriority
+      type: string
+      enum: [ LOW, MIDDLE, HIGH ]
+    employee_grade:
+      title: EmployeeGrade
+      type: string
+      enum: [ JUNIOR, MIDDLE, SENIOR ]
+    departure_task_manual:
+      title: DepartureTaskManual
+      type: object
+      properties:
+        priority: { $ref: "#/components/schemas/task_priority" }
+        performTime: { type: number }
+        requiredEmployeeGrade: { $ref: "#/components/schemas/employee_grade" }
+        issuedCardsMinDaysCount1: { type: integer }
+        issuedCardsMinDaysCount2: { type: integer }
+    tuition_task_manual:
+      title: TuitionTaskManual
+      type: object
+      properties:
+        priority: { $ref: "#/components/schemas/task_priority" }
+        performTime: { type: number }
+        requiredEmployeeGrade: { $ref: "#/components/schemas/employee_grade" }
+        approvedAppsPercentage: { type: number }
+        issuedCardsCount: { type: integer }
+    delivery_task_manual:
+      title: DeliveryTaskManual
+      type: object
+      properties:
+        priority: { $ref: "#/components/schemas/task_priority" }
+        performTime: { type: number }
+        requiredEmployeeGrade: { $ref: "#/components/schemas/employee_grade" }
+        joinTime: { $ref: "#/components/schemas/agent_point_join_time" }
+    employee:
+      title: Employee
+      type: object
+      properties:
+        account: { $ref: "#/components/schemas/account" }
+        grade: { $ref: "#/components/schemas/employee_grade" }
+        locationAddress: { type: string }
+    update_employee:
+      title: UpdateEmployee
+      type: object
+      properties:
+        grade: { $ref: "#/components/schemas/employee_grade" }
+        locationAddress: { type: string }
+    task_type:
+      title: TaskType
+      type: string
+      enum: [ DEPARTURE, TUITION, DELIVERY ]
+    create_task:
+      title: CreateTask
+      type: object
+      properties:
+        type: { $ref: "#/components/schemas/task_type" }
+        agentPointId: { type: integer }
+        startTime: { $ref: "#/components/schemas/time" }
+        employeeId: { type: integer }
+        order: { type: integer }
+    update_task:
+      title: UpdateTask
+      type: object
+      properties:
+        type: { $ref: "#/components/schemas/task_type" }
+        agentPointId: { type: integer }
+        startTime: { $ref: "#/components/schemas/time" }
+        employeeId: { type: integer }
+        order: { type: integer }
+    task:
+      title: Task
+      type: object
+      properties:
+        id: { type: integer }
+        type: { $ref: "#/components/schemas/task_type" }
+        agentPointId: { type: integer }
+        agentPointAddress: { type: string }
+        creationTime: { $ref: "#/components/schemas/date" } 
+        startTime: { $ref: "#/components/schemas/time" }
+        gettingTime: { type: number }
+        distanceTo: { type: number }
+        completeTime: { type: number }
+        employeeId: { type: integer }
+        employeeFullName: { type: string }
+        order: { type: integer }
+        status: { $ref: "#/components/schemas/task_status" }
+    task_status:
+      title: TaskStatus
+      type: object
+      properties:
+        isCompleted: { type: boolean }
+        comment: { type: string }
+    date:
+      type: string
+      description: Дата в формате ISO8601
+      example: "2000-01-01"
+    time:
+      type: string
+      description: Время в формате ISO8601
+      example: "12:00"
+
+  securitySchemes:
+    basic:
+      type: http
+      scheme: Basic
+      
+  responses:
+    forbidden:
+      description: Доступ запрещен
+    not_found:
+      description: Запрашиваемый объект не был найден
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+    login:
+      name: login
+      in: path
+      required: true
+      schema: { type: string }
+    pagination_page:
+      name: page
+      in: query
+      required: false
+      schema: { type: integer, default: 0, minimum: 0 }
+    pagination_size:
+      name: size
+      in: query
+      required: false
+      schema: { type: integer, default: 10, minimum: 1 }

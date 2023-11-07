@@ -1,0 +1,54 @@
+version: "3.9"
+
+
+services:
+  database:
+    image: postgres:16
+    healthcheck:
+      test: pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+      interval: 3s
+      retries: 15
+      start_period: 5s
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    secrets:
+      - postgres-user
+      - postgres-password
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER_FILE: /run/secrets/postgres-user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-password
+
+  backend:
+    build:
+      context: .
+      target: run
+    healthcheck:
+      test: curl -f http://localhost:8080/status
+      interval: 3s
+      retries: 30
+      start_period: 5s
+    ports:
+      - "$SERVER_PORT:$SERVER_PORT"
+    secrets:
+      - source: postgres-user
+        target: spring.datasource.username
+      - source: postgres-password
+        target: spring.datasource.password
+    environment:
+      SPRING_DATASOURCE_URL: $SPRING_DATASOURCE_URL
+      SERVER_PORT: $SERVER_PORT
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+secrets:
+  postgres-user:
+    environment: POSTGRES_USER
+  postgres-password:
+    environment: POSTGRES_PASSWORD
+
+
+volumes:
+  db_data:
