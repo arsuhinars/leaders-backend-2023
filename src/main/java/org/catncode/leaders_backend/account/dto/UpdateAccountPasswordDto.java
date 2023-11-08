@@ -11,5 +11,5 @@ import lombok.*;
 public class UpdateAccountPasswordDto {
     @NotBlank
     @Size(min = 8)
-    private String new_password;
+    private String newPassword;
 }

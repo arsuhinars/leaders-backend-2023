@@ -10,6 +10,7 @@ import org.catncode.leaders_backend.core.exception.AppException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,19 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AccountServiceImpl implements AccountService{
     private final AccountRepository accountRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper modelMapper) {
+    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public Account create(CreateAccountDto dto) throws AppException {
-        return accountRepository.save(
-                modelMapper.map(dto, Account.class)
+        var account = modelMapper.map(dto, Account.class);
+        account.setPasswordHash(
+                passwordEncoder.encode(dto.getPassword())
         );
+
+        return accountRepository.save(account);
     }
 
     @Override
@@ -64,13 +69,16 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public Account updatePasswordById(Integer id, UpdateAccountPasswordDto dto) throws AppException {
         var account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
-        modelMapper.map(dto, account);
+        account.setPasswordHash(
+                passwordEncoder.encode(dto.getNewPassword())
+        );
+
         return accountRepository.save(account);
     }
 
     @Override
     public void deleteById(Integer id) throws AppException {
-        if(!accountRepository.existsById(id)){
+        if (!accountRepository.existsById(id)){
             throw new AccountNotFoundException();
         }
         accountRepository.deleteById(id);
@@ -79,6 +87,6 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public void deleteByLogin(String login) throws AppException {
         var account = accountRepository.findByLogin(login).orElseThrow(AccountNotFoundException::new);
-        accountRepository.deleteById(account.getId());
+        accountRepository.delete(account);
     }
 }

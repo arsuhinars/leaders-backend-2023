@@ -49,7 +49,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public void deleteById(Integer id) throws AppException {
-        if(!taskRepository.existsById(id)){
+        if (!taskRepository.existsById(id)){
             throw new TaskNotFoundException();
         }
         taskRepository.deleteById(id);

@@ -5,7 +5,9 @@ import lombok.*;
 import org.catncode.leaders_backend.account.dto.AccountRole;
 
 @Entity
-@Table(name = "account")
+@Table(name = "account", indexes = {
+        @Index(columnList = "login", unique = true),
+})
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Setter
@@ -20,7 +22,7 @@ public class Account {
     private Integer id;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String login;
 
     @NonNull

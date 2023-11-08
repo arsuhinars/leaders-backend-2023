@@ -49,7 +49,7 @@ public class AgentPointServiceImpl implements AgentPointService{
 
     @Override
     public void deleteById(Integer id) throws AppException {
-        if(!agentPointRepository.existsById(id)){
+        if (!agentPointRepository.existsById(id)){
             throw new AgentPointNotFoundException();
         }
         agentPointRepository.deleteById(id);

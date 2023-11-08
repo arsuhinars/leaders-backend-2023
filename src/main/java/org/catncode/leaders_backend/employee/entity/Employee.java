@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "employee", indexes = {
+        @Index(columnList = "account_id")
+})
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Setter
@@ -26,7 +28,7 @@ public class Employee {
 
     @NonNull
     @OneToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @NonNull
