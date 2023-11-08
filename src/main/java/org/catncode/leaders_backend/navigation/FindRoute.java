@@ -116,6 +116,22 @@ public class FindRoute {
 
         return responsePath;
     }
+    public ResponsePath aToBByPoints(GraphHopper hopper, double p1Lat, double p1Lng, double p2Lat, double p2Lng)
+    {
+        GHRequest req = new GHRequest(p1Lat, p1Lng, p2Lat, p2Lng).
+                // note that we have to specify which profile we are using even when there is only one like here
+                        setProfile("car");
+        GHResponse rsp = hopper.route(req);
+
+        // handle errors
+        if (rsp.hasErrors())
+            throw new RuntimeException(rsp.getErrors().toString());
+
+        // use the best path, see the GHResponse class for more possibilities.
+        ResponsePath responsePath = rsp.getBest();
+
+        return responsePath;
+    }
 
     // points, distance in meters and time in millis of the full path
     // PointList pointList = path.getPoints();
@@ -131,6 +147,26 @@ public class FindRoute {
 
         GHRequest req = new GHRequest().
                         setProfile("car");
+        for(Point point: points){
+            req.addPoint(new GHPoint(point.getLat(), point.getLng()));
+        }
+
+        GHResponse rsp = hopper.route(req);
+
+        // handle errors
+        if (rsp.hasErrors())
+            throw new RuntimeException(rsp.getErrors().toString());
+
+        // use the best path, see the GHResponse class for more possibilities.
+        ResponsePath responsePath = rsp.getBest();
+
+        return responsePath;
+    }
+
+    public ResponsePath routeFewPointsByPoints(GraphHopper hopper, List<Point> points){
+
+        GHRequest req = new GHRequest().
+                setProfile("car");
         for(Point point: points){
             req.addPoint(new GHPoint(point.getLat(), point.getLng()));
         }
