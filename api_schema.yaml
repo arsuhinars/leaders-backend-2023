@@ -717,7 +717,7 @@ components:
       title: UpdateAccountPassword
       type: object
       properties:
-        new_password: { type: string, minLength: 8 }
+        newPassword: { type: string, minLength: 8 }
     account:
       title: Account
       type: object

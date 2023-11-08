@@ -31,7 +31,7 @@ public class Task {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "agent_point_id")
+    @JoinColumn(name = "agent_point_id", nullable = false)
     private AgentPoint agentPoint;
 
     @NonNull
