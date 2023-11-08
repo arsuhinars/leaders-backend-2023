@@ -24,7 +24,7 @@ public class TaskStatus {
     private Task task;
 
     @NonNull
-    @Column(name = "is_completed", nullable = false)
+    @Column(nullable = false)
     private Boolean isCompleted;
 
     @NonNull

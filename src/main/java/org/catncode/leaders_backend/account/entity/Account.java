@@ -24,11 +24,11 @@ public class Account {
     private String login;
 
     @NonNull
-    @Column(name = "password_hash", nullable = false)
+    @Column(nullable = false)
     private String passwordHash;
 
     @NonNull
-    @Column(name = "full_name", nullable = false)
+    @Column(nullable = false)
     private String fullName;
 
     @NonNull

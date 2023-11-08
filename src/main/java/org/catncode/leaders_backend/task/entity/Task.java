@@ -25,12 +25,12 @@ public class Task {
     private Integer id;
 
     @NonNull
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @NonNull
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "agent_point_id")
     private AgentPoint agentPoint;
 
@@ -44,18 +44,18 @@ public class Task {
     private LocalDate date;
 
     @NonNull
-    @Column(name = "start_time", nullable = false)
+    @Column(nullable = false)
     private OffsetTime startTime;
 
     @NonNull
-    @Column(name = "getting_time", nullable = false)
+    @Column(nullable = false)
     private Double gettingTime;
 
     @NonNull
-    @Column(name = "distance_to", nullable = false)
+    @Column(nullable = false)
     private Double distanceTo;
 
     @NonNull
-    @Column(name = "order_number", nullable = false)
+    @Column(nullable = false)
     private Integer orderNumber;
 }

@@ -3,6 +3,10 @@ package org.catncode.leaders_backend.agent_point.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.catncode.leaders_backend.agent_point.dto.AgentPointJoinTime;
+import org.catncode.leaders_backend.task.entity.Task;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "agent_point")
@@ -24,23 +28,26 @@ public class AgentPoint {
     private String address;
 
     @NonNull
-    @Column(name = "join_time", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AgentPointJoinTime joinTime;
 
     @NonNull
-    @Column(name = "materials_delivered", nullable = false)
+    @Column(nullable = false)
     private Boolean materialsDelivered;
 
     @NonNull
-    @Column(name = "card_issuance_days_passed", nullable = false)
+    @Column(nullable = false)
     private Integer cardIssuanceDaysPassed;
 
     @NonNull
-    @Column(name = "approved_apps_count", nullable = false)
+    @Column(nullable = false)
     private Integer approvedAppsCount;
 
     @NonNull
-    @Column(name = "issued_cards_count", nullable = false)
+    @Column(nullable = false)
     private Integer issuedCardsCount;
+
+    @OneToMany(mappedBy = "agentPoint")
+    private Set<Task> taskSet = new HashSet<>();
 }

@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.catncode.leaders_backend.account.entity.Account;
 import org.catncode.leaders_backend.employee.dto.EmployeeGrade;
+import org.catncode.leaders_backend.task.entity.Task;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "employee")
@@ -31,6 +35,9 @@ public class Employee {
     private EmployeeGrade grade;
 
     @NonNull
-    @Column(name = "location_address", nullable = false)
+    @Column(nullable = false)
     private String locationAddress;
+
+    @OneToMany(mappedBy = "employee")
+    private Set<Task> tasks = new HashSet<>();
 }
