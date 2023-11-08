@@ -4,9 +4,7 @@ import com.graphhopper.GraphHopper;
 import com.graphhopper.ResponsePath;
 import org.catncode.leaders_backend.navigation.FindRoute;
 import org.catncode.leaders_backend.navigation.dto.Point;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class FindRouteTest {
 
     protected GraphHopper hopper;
 
-    @BeforeEach
+    @BeforeAll
     public void createHopper(){
         hopper = createGraphHopperInstance();
     }
@@ -52,7 +50,7 @@ public class FindRouteTest {
         Point point = findRoute.getPoint(hopper, address2);
     }
 
-    @AfterEach
+    @AfterAll
     public void closeHopper(){
         // release resources to properly shutdown or start a new instance
         hopper.close();
