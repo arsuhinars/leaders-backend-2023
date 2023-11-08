@@ -17,10 +17,10 @@ public class FindRouteTest {
     protected String address2 = "Краснодар, Красных Партизан, 321";
     protected String address3 = "Краснодар, В.Н. Мачуги, 41";
 
-    protected GraphHopper hopper;
+    protected static GraphHopper hopper;
 
     @BeforeAll
-    public void createHopper(){
+    public static void createHopper(){
         hopper = createGraphHopperInstance();
     }
 
@@ -51,7 +51,7 @@ public class FindRouteTest {
     }
 
     @AfterAll
-    public void closeHopper(){
+    public static void closeHopper(){
         // release resources to properly shutdown or start a new instance
         hopper.close();
     }
