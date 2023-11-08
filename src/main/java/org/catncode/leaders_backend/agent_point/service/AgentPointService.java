@@ -1,6 +1,7 @@
 package org.catncode.leaders_backend.agent_point.service;
 
 import org.catncode.leaders_backend.agent_point.dto.CreateAgentPointDto;
+import org.catncode.leaders_backend.agent_point.dto.UpdateAgentPointDto;
 import org.catncode.leaders_backend.agent_point.entity.AgentPoint;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ public interface AgentPointService {
 
     AgentPoint getById(Integer id) throws AppException;
 
-    AgentPoint updateById(Integer id) throws AppException;
+    AgentPoint updateById(Integer id, UpdateAgentPointDto dto) throws AppException;
 
     void deleteById(Integer id) throws AppException;
 }
