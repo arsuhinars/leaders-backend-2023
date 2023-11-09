@@ -48,6 +48,6 @@ public class AgentPoint {
     @Column(nullable = false)
     private Integer issuedCardsCount;
 
-    @OneToMany(mappedBy = "agentPoint")
+    @OneToMany(mappedBy = "agentPoint", cascade = { CascadeType.REMOVE })
     private Set<Task> taskSet = new HashSet<>();
 }

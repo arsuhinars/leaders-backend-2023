@@ -6,6 +6,7 @@ import org.catncode.leaders_backend.task.dto.UpdateTaskDto;
 import org.catncode.leaders_backend.task.entity.Task;
 import org.catncode.leaders_backend.task.exception.TaskNotFoundException;
 import org.catncode.leaders_backend.task.repository.TaskRepository;
+import org.catncode.leaders_backend.task.specification.TaskSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,8 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public Page<Task> getAll(Integer employeeId, Integer agentPointId, Boolean archived, Pageable pageable) {
-        return taskRepository.findAll(pageable);
+        var specification = TaskSpecification.filterTasks(employeeId, agentPointId, archived);
+        return taskRepository.findAll(specification, pageable);
     }
 
     @Override

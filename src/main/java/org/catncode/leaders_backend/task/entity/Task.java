@@ -10,7 +10,11 @@ import java.time.LocalDate;
 import java.time.OffsetTime;
 
 @Entity
-@Table(name = "task")
+@Table(name = "task", indexes = {
+        @Index(columnList = "employee_id"),
+        @Index(columnList = "agent_point_id"),
+        @Index(columnList = "orderNumber")
+})
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Setter
@@ -24,7 +28,6 @@ public class Task {
     @ToString.Include
     private Integer id;
 
-    @NonNull
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
@@ -43,19 +46,21 @@ public class Task {
     @Column(nullable = false)
     private LocalDate date;
 
-    @NonNull
     @Column(nullable = false)
     private OffsetTime startTime;
 
-    @NonNull
     @Column(nullable = false)
     private Double gettingTime;
 
-    @NonNull
     @Column(nullable = false)
     private Double distanceTo;
 
-    @NonNull
     @Column(nullable = false)
     private Integer orderNumber;
+
+    @Column(nullable = false)
+    private Boolean isArchived = false;
+
+    @OneToOne(mappedBy = "task", cascade = { CascadeType.REMOVE })
+    private TaskStatus status;
 }

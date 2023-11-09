@@ -40,6 +40,6 @@ public class Employee {
     @Column(nullable = false)
     private String locationAddress;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", cascade = { CascadeType.REMOVE })
     private Set<Task> tasks = new HashSet<>();
 }

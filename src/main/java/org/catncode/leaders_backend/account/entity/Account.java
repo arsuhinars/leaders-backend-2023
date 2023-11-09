@@ -3,6 +3,7 @@ package org.catncode.leaders_backend.account.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.catncode.leaders_backend.account.dto.AccountRole;
+import org.catncode.leaders_backend.employee.entity.Employee;
 
 @Entity
 @Table(name = "account", indexes = {
@@ -37,4 +38,7 @@ public class Account {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountRole role;
+
+    @OneToOne(mappedBy = "account", cascade = { CascadeType.REMOVE })
+    private Employee employee;
 }

@@ -51,10 +51,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/status").permitAll()
 
                 .requestMatchers(HttpMethod.POST, "/accounts").hasAuthority(adminAuthority)
-                .requestMatchers(HttpMethod.GET, "/accounts/*").authenticated()
+                .requestMatchers(HttpMethod.GET, "/accounts/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.PUT, "/accounts/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.DELETE, "/accounts/*").hasAuthority(adminAuthority)
-                .requestMatchers(HttpMethod.GET, "/accounts/login/*").authenticated()
+                .requestMatchers(HttpMethod.GET, "/accounts/login/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.PUT, "/accounts/login/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.DELETE, "/accounts/login/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.PUT, "/accounts/*/password").hasAuthority(adminAuthority)
@@ -71,7 +71,7 @@ public class SecurityConfig {
 
                 .requestMatchers(HttpMethod.GET, "/employees/all").hasAnyAuthority(adminAuthority, managerAuthority)
                 .requestMatchers(HttpMethod.GET, "/employees/current").hasAuthority(employeeAuthority)
-                .requestMatchers(HttpMethod.GET, "/employees/*").authenticated()
+                .requestMatchers(HttpMethod.GET, "/employees/*").hasAnyAuthority(adminAuthority, managerAuthority)
                 .requestMatchers(HttpMethod.PUT, "/employees/*").hasAuthority(adminAuthority)
 
                 .requestMatchers(HttpMethod.POST, "/tasks/generate").hasAnyAuthority(adminAuthority, managerAuthority)
