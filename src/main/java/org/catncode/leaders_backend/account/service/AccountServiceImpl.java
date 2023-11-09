@@ -5,6 +5,7 @@ import org.catncode.leaders_backend.account.dto.CreateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountPasswordDto;
 import org.catncode.leaders_backend.account.entity.Account;
+import org.catncode.leaders_backend.account.exception.AccountLoginAlreadyExistsException;
 import org.catncode.leaders_backend.account.exception.AccountNotFoundException;
 import org.catncode.leaders_backend.account.repository.AccountRepository;
 import org.catncode.leaders_backend.core.exception.AppException;
@@ -38,6 +39,10 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public Account create(CreateAccountDto dto) throws AppException {
+        if (accountRepository.existsByLogin(dto.getLogin())) {
+            throw new AccountLoginAlreadyExistsException();
+        }
+
         var account = modelMapper.map(dto, Account.class);
         account.setPasswordHash(
                 passwordEncoder.encode(dto.getPassword())
@@ -69,6 +74,12 @@ public class AccountServiceImpl implements AccountService{
             account.setEmployee(null);
         }
 
+        if (!account.getLogin().equals(dto.getLogin()) &&
+                accountRepository.existsByLogin(dto.getLogin())
+        ) {
+            throw new AccountLoginAlreadyExistsException();
+        }
+
         modelMapper.map(dto, account);
         return accountRepository.save(account);
     }
@@ -79,6 +90,12 @@ public class AccountServiceImpl implements AccountService{
         if (account.getRole() == AccountRole.EMPLOYEE && dto.getRole() != AccountRole.EMPLOYEE) {
             employeeRepository.delete(account.getEmployee());
             account.setEmployee(null);
+        }
+
+        if (!account.getLogin().equals(dto.getLogin()) &&
+                accountRepository.existsByLogin(dto.getLogin())
+        ) {
+            throw new AccountLoginAlreadyExistsException();
         }
 
         modelMapper.map(dto, account);

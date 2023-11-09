@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import org.catncode.leaders_backend.agent_point.dto.AgentPointDto;
 import org.catncode.leaders_backend.agent_point.dto.CreateAgentPointDto;
 import org.catncode.leaders_backend.agent_point.dto.UpdateAgentPointDto;
-import org.catncode.leaders_backend.agent_point.entity.AgentPoint;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/agent_points")
 public interface AgentPointController {
     @PostMapping
-    AgentPoint createAgentPoint(@Valid @RequestBody CreateAgentPointDto schema);
+    AgentPointDto createAgentPoint(@Valid @RequestBody CreateAgentPointDto schema);
 
     @GetMapping("/all")
     Pagination<AgentPointDto> getAllAgentPoints(
@@ -23,10 +22,10 @@ public interface AgentPointController {
     );
 
     @GetMapping("/{id}")
-    AgentPoint getAgentPointById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
+    AgentPointDto getAgentPointById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @PutMapping("/{id}")
-    AgentPoint updateAgentPointById(
+    AgentPointDto updateAgentPointById(
             @Valid @RequestBody UpdateAgentPointDto schema, @PathVariable @NotNull @Min(1) Integer id
     ) throws AppException;
 

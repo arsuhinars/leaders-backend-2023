@@ -4,67 +4,83 @@ import org.catncode.leaders_backend.account.dto.AccountDto;
 import org.catncode.leaders_backend.account.dto.CreateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountPasswordDto;
-import org.catncode.leaders_backend.account.entity.Account;
-import org.catncode.leaders_backend.account.service.AccountServiceImpl;
+import org.catncode.leaders_backend.account.service.AccountService;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
+import org.catncode.leaders_backend.core.factory.PaginationFactory;
+import org.catncode.leaders_backend.security.dto.AccountDetails;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class AccountControllerImpl implements AccountController{
 
-    private final AccountServiceImpl accountServiceImpl;
-    AccountDto accountDto;
+    private final AccountService accountService;
+    private final ModelMapper modelMapper;
+    private final PaginationFactory paginationFactory;
 
-    public AccountControllerImpl(AccountServiceImpl accountServiceImpl) {
-        this.accountServiceImpl = accountServiceImpl;
+    public AccountControllerImpl(
+            AccountService accountService,
+            ModelMapper modelMapper,
+            PaginationFactory paginationFactory
+    ) {
+        this.accountService = accountService;
+        this.modelMapper = modelMapper;
+        this.paginationFactory = paginationFactory;
     }
 
     @Override
-    public Account createAccount(CreateAccountDto schema) throws AppException {
-        return accountServiceImpl.create(schema);
+    public AccountDto createAccount(CreateAccountDto schema) throws AppException {
+        return modelMapper.map(accountService.create(schema), AccountDto.class);
     }
 
     @Override
-    public Account getAccountById(Integer id) throws AppException {
-        return accountServiceImpl.getById(id);
+    public AccountDto getAccountById(Integer id) throws AppException {
+        return modelMapper.map(accountService.getById(id), AccountDto.class);
     }
 
     @Override
-    public Account updateAccountById(UpdateAccountDto schema, Integer id) throws AppException {
-        return accountServiceImpl.updateById(id, schema);
+    public AccountDto updateAccountById(UpdateAccountDto schema, Integer id) throws AppException {
+        return modelMapper.map(accountService.updateById(id, schema), AccountDto.class);
     }
 
     @Override
     public void deleteAccountById(Integer id) throws AppException {
-        accountServiceImpl.deleteById(id);
+        accountService.deleteById(id);
     }
 
     @Override
-    public Account getAccountByLogin(String login) throws AppException {
-        return accountServiceImpl.getByLogin(login);
+    public AccountDto getAccountByLogin(String login) throws AppException {
+        return modelMapper.map(accountService.getByLogin(login), AccountDto.class);
     }
 
     @Override
-    public Account updateAccountByLogin(UpdateAccountDto schema, String login) throws AppException {
-        return accountServiceImpl.updateByLogin(login, schema);
+    public AccountDto updateAccountByLogin(UpdateAccountDto schema, String login) throws AppException {
+        return modelMapper.map(accountService.updateByLogin(login, schema), AccountDto.class);
     }
 
     @Override
     public void deleteAccountByLogin(String login) throws AppException {
-        accountServiceImpl.deleteByLogin(login);
+        accountService.deleteByLogin(login);
     }
 
     @Override
     public void updateAccountPasswordById(UpdateAccountPasswordDto schema, Integer id) throws AppException {
-        accountServiceImpl.updatePasswordById(id, schema);
+        accountService.updatePasswordById(id, schema);
     }
 
     @Override
     public Pagination<AccountDto> getAllAccounts(Integer page, Integer size) {
-        return accountServiceImpl.getAll();
+        return paginationFactory.createPagination(
+                accountService.getAll(PageRequest.of(page, size)), AccountDto.class
+        );
     }
 
     @Override
-    public AccountDto getCurrentAccount() {
-        return accountDto;
+    public AccountDto getCurrentAccount(Authentication authentication) {
+        var details = (AccountDetails)authentication.getPrincipal();
+        return modelMapper.map(details.getAccount(), AccountDto.class);
     }
 }

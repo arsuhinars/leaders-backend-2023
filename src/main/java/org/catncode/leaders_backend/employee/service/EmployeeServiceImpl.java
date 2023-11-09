@@ -5,7 +5,6 @@ import org.catncode.leaders_backend.account.exception.AccountNotFoundException;
 import org.catncode.leaders_backend.account.repository.AccountRepository;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.catncode.leaders_backend.core.exception.EntityConflictException;
-import org.catncode.leaders_backend.core.exception.InvalidFormatException;
 import org.catncode.leaders_backend.employee.dto.UpdateEmployeeDto;
 import org.catncode.leaders_backend.employee.entity.Employee;
 import org.catncode.leaders_backend.employee.exception.EmployeeNotFoundException;

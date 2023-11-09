@@ -8,21 +8,21 @@ import org.catncode.leaders_backend.account.dto.AccountDto;
 import org.catncode.leaders_backend.account.dto.CreateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountPasswordDto;
-import org.catncode.leaders_backend.account.entity.Account;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/accounts")
 public interface AccountController {
     @PostMapping
-    Account createAccount(@Valid @RequestBody CreateAccountDto schema) throws AppException;
+    AccountDto createAccount(@Valid @RequestBody CreateAccountDto schema) throws AppException;
 
     @GetMapping("/{id}")
-    Account getAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
+    AccountDto getAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @PutMapping("/{id}")
-    Account updateAccountById(
+    AccountDto updateAccountById(
             @Valid @RequestBody UpdateAccountDto schema, @PathVariable @NotNull @Min(1) Integer id
     ) throws AppException;
 
@@ -30,10 +30,10 @@ public interface AccountController {
     void deleteAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @GetMapping("/login/{login}")
-    Account getAccountByLogin(@PathVariable @NotEmpty String login) throws AppException;
+    AccountDto getAccountByLogin(@PathVariable @NotEmpty String login) throws AppException;
 
     @PutMapping("/login/{login}")
-    Account updateAccountByLogin(
+    AccountDto updateAccountByLogin(
             @Valid @RequestBody UpdateAccountDto schema, @PathVariable @NotEmpty String login
     ) throws AppException;
 
@@ -54,5 +54,5 @@ public interface AccountController {
     );
 
     @GetMapping("/current")
-    AccountDto getCurrentAccount();
+    AccountDto getCurrentAccount(Authentication authentication);
 }

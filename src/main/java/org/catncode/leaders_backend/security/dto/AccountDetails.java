@@ -1,5 +1,6 @@
 package org.catncode.leaders_backend.security.dto;
 
+import lombok.Getter;
 import org.catncode.leaders_backend.account.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class AccountDetails implements UserDetails {
+    @Getter
     private final Account account;
     private final Collection<AccountRoleAuthority> authorities;
 

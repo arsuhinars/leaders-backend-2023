@@ -2,10 +2,7 @@ package org.catncode.leaders_backend.task.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.catncode.leaders_backend.task.dto.BaseTaskManual;
 import org.catncode.leaders_backend.task.dto.TaskType;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "task_manual")

@@ -6,7 +6,6 @@ import org.catncode.leaders_backend.task.dto.*;
 import org.catncode.leaders_backend.task.entity.TaskManual;
 import org.catncode.leaders_backend.task.exception.TaskManualNotFoundException;
 import org.catncode.leaders_backend.task.repository.TaskManualRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
