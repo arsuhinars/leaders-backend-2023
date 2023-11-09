@@ -1,19 +1,22 @@
 package org.catncode.leaders_backend.task.service;
 
-import org.catncode.leaders_backend.task.dto.DeliveryTaskManual;
-import org.catncode.leaders_backend.task.dto.DepartureTaskManual;
-import org.catncode.leaders_backend.task.dto.TuitionTaskManual;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.catncode.leaders_backend.task.dto.*;
 
 public interface TaskManualService {
-    DepartureTaskManual getDepartureTaskManual();
+    static <T extends BaseTaskManual> TaskType getTypeByManual(Class<T> type) {
+        if (type == DeliveryTaskManual.class) {
+            return TaskType.DELIVERY;
+        } else if (type == TuitionTaskManual.class) {
+            return TaskType.TUITION;
+        } else if (type == DepartureTaskManual.class) {
+            return TaskType.DEPARTURE;
+        }
 
-    DepartureTaskManual updateDepartureTaskManual(DepartureTaskManual dto);
+        throw new IllegalArgumentException();
+    }
 
-    TuitionTaskManual getTuitionTaskManual();
+    <T extends BaseTaskManual> T getTaskManual(Class<T> type) throws JsonProcessingException;
 
-    TuitionTaskManual updateTuitionTaskManual(TuitionTaskManual dto);
-
-    DeliveryTaskManual getDeliveryTaskManual();
-
-    DeliveryTaskManual updateDeliveryTaskManual(DeliveryTaskManual dto);
+    <T extends BaseTaskManual> T updateTaskManual(Class<T> type, T dto) throws JsonProcessingException;
 }

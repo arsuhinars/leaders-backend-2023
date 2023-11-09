@@ -29,6 +29,5 @@ public class TaskManual {
 
     @NonNull
     @Column(nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private BaseTaskManual manual;
+    private String jsonManual;
 }
