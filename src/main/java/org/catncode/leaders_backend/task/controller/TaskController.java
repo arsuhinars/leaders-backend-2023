@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.catncode.leaders_backend.task.dto.*;
+import org.catncode.leaders_backend.task.entity.Task;
+import org.catncode.leaders_backend.task.entity.TaskStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/tasks")
@@ -32,7 +34,7 @@ public interface TaskController {
     void generateTasks();
 
     @PostMapping
-    TaskDto createTask(@Valid @RequestBody CreateTaskDto schema);
+    Task createTask(@Valid @RequestBody CreateTaskDto schema);
 
     @GetMapping("/all")
     Pagination<TaskDto> getAllTasks(
@@ -44,10 +46,10 @@ public interface TaskController {
     ) throws AppException;
 
     @GetMapping("/{id}")
-    TaskDto getTaskById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
+    Task getTaskById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @PutMapping("/{id}")
-    TaskDto updateTaskById(
+    Task updateTaskById(
             @Valid @RequestBody UpdateTaskDto schema, @PathVariable @NotNull @Min(1) Integer id
     ) throws AppException;
 
@@ -55,10 +57,10 @@ public interface TaskController {
     void deleteTaskById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @GetMapping("/{id}/status")
-    TaskStatusDto getTaskStatusById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
+    Task getTaskStatusById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @PutMapping("/{id}/status")
-    TaskStatusDto updateTaskStatusById(
+    TaskStatus updateTaskStatusById(
             @Valid @RequestBody TaskStatusDto schema, @PathVariable @NotNull @Min(1) Integer id
     ) throws AppException;
 }

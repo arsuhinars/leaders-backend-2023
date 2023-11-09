@@ -8,6 +8,7 @@ import org.catncode.leaders_backend.account.dto.AccountDto;
 import org.catncode.leaders_backend.account.dto.CreateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountPasswordDto;
+import org.catncode.leaders_backend.account.entity.Account;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/accounts")
 public interface AccountController {
     @PostMapping
-    AccountDto createAccount(@Valid @RequestBody CreateAccountDto schema) throws AppException;
+    Account createAccount(@Valid @RequestBody CreateAccountDto schema) throws AppException;
 
     @GetMapping("/{id}")
-    AccountDto getAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
+    Account getAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @PutMapping("/{id}")
-    AccountDto updateAccountById(
+    Account updateAccountById(
             @Valid @RequestBody UpdateAccountDto schema, @PathVariable @NotNull @Min(1) Integer id
     ) throws AppException;
 
@@ -29,10 +30,10 @@ public interface AccountController {
     void deleteAccountById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;
 
     @GetMapping("/login/{login}")
-    AccountDto getAccountByLogin(@PathVariable @NotEmpty String login) throws AppException;
+    Account getAccountByLogin(@PathVariable @NotEmpty String login) throws AppException;
 
     @PutMapping("/login/{login}")
-    AccountDto updateAccountByLogin(
+    Account updateAccountByLogin(
             @Valid @RequestBody UpdateAccountDto schema, @PathVariable @NotEmpty String login
     ) throws AppException;
 
