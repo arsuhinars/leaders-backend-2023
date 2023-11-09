@@ -52,8 +52,7 @@ paths:
       tags: [ Accounts ]
       summary: Получить аккаунт по id
       description: |
-        Требуемая роль: `ADMIN` или `MANAGER`.  
-        Также метод доступен, если id текущего пользователя равен запрашиваемому id
+        Требуемая роль: `ADMIN`
       operationId: getAccountById
       parameters:
         - $ref: "#/components/parameters/id"
@@ -109,9 +108,7 @@ paths:
       tags: [ Accounts ]
       summary: Получить аккаунт по логину
       description: |
-        Требуемая роль: `ADMIN` или `MANAGER`.  
-        Также метод доступен, если логин текущего пользователя равен запрашиваемому логину
-      operationId: getAccountByLogin
+        Требуемая роль: `ADMIN`
       parameters:
         - $ref: "#/components/parameters/login"
       responses:
@@ -472,7 +469,6 @@ paths:
       summary: Получить сотрудника по id его аккаунта
       description: |
         Требуемая роль: `ADMIN` или `MANAGER`  
-        Также метод доступен, если id текущего пользователя равен запрашиваемому id
       operationId: getEmployeeById
       parameters:
         - $ref: "#/components/parameters/id"
@@ -508,6 +504,8 @@ paths:
                 $ref: "#/components/schemas/employee"
         "403": { $ref: "#/components/responses/forbidden" }
         "404": { $ref: "#/components/responses/not_found" }
+        "409":
+          description: Аккаунт пользователя с данным id не является сотрудником
 
   /tasks/generate:
     post:
