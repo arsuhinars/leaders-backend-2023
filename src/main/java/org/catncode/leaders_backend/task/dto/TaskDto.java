@@ -1,12 +1,15 @@
 package org.catncode.leaders_backend.task.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.OffsetTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -29,10 +32,12 @@ public class TaskDto {
     private String agentPointAddress;
 
     @NotNull
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate creationTime;
 
     @NotNull
-    private OffsetTime startTime;
+    @JsonSerialize(using = LocalTimeSerializer.class)
+    private LocalTime startTime;
 
     @NotNull
     private Double gettingTime;
