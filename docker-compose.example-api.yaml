@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  whoami:
+    image: "traefik/whoami"
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`127.0.0.1`)"
+    expose:
+      - "80"
