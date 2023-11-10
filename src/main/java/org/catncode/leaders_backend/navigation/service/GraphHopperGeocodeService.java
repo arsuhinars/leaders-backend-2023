@@ -33,7 +33,7 @@ public class GraphHopperGeocodeService implements GeocodeService {
         })
                 .retrieve()
                 .bodyToMono(GeocodeResponse.class)
-                .doOnError(error -> Mono.error(ApiException::new))
+                .doOnError(error -> Mono.error(new ApiException(error.toString())))
                 .block();
 
         if (response == null || response.getHits().isEmpty()) {

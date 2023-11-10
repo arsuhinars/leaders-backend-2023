@@ -3,7 +3,6 @@ package org.catncode.leaders_backend.navigation.service;
 import com.google.common.collect.ImmutableList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Setter;
 import org.catncode.leaders_backend.navigation.dto.PathDistance;
 import org.catncode.leaders_backend.navigation.entity.Location;
 import org.catncode.leaders_backend.navigation.exception.PathNotFoundException;

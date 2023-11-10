@@ -6,8 +6,6 @@ import org.catncode.leaders_backend.account.entity.Account;
 import org.catncode.leaders_backend.employee.dto.EmployeeGrade;
 import org.catncode.leaders_backend.navigation.entity.Location;
 import org.catncode.leaders_backend.task.entity.Task;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.Objects;
