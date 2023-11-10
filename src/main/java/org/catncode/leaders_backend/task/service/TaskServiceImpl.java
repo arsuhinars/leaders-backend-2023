@@ -86,7 +86,7 @@ public class TaskServiceImpl implements TaskService {
         task.setEmployee(employee);
 
         taskRepository.save(task);
-        recalculateEmployeeTasks(employee.getId());
+        recalculateEmployeeTasks(employee.getAccount().getId());
 
         return taskRepository.findById(task.getId()).orElseThrow();
     }
