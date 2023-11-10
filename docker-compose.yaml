@@ -28,18 +28,38 @@ services:
       interval: 3s
       retries: 30
       start_period: 5s
-    ports:
-      - "$SERVER_PORT:$SERVER_PORT"
+    volumes:
+      - type: bind
+        source: ./graph_hopper
+        target: /backend/graph_hopper
     secrets:
       - source: postgres-user
         target: spring.datasource.username
       - source: postgres-password
         target: spring.datasource.password
+      - source: graph-hopper-token
+        target: leaders_backend.graph_hopper_token
     environment:
       SPRING_DATASOURCE_URL: $SPRING_DATASOURCE_URL
-      SERVER_PORT: $SERVER_PORT
+      SERVER_PORT: 8080
+    labels:
+      - "traefik.http.routers.backend.rule=Host(`localhost`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
     depends_on:
       database:
+        condition: service_healthy
+
+  traefik:
+    image: "traefik:v3.0"
+    command:
+      - "--providers.docker=true"
+      - "--entryPoints.web.address=:$SERVER_PORT"
+    ports:
+      - "$SERVER_PORT:$SERVER_PORT"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      backend:
         condition: service_healthy
 
 
@@ -48,6 +68,8 @@ secrets:
     environment: POSTGRES_USER
   postgres-password:
     environment: POSTGRES_PASSWORD
+  graph-hopper-token:
+    environment: GRAPH_HOPPER_TOKEN
 
 
 volumes:

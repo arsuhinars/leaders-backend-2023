@@ -7,6 +7,7 @@ import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
 import org.catncode.leaders_backend.employee.dto.EmployeeDto;
 import org.catncode.leaders_backend.employee.dto.UpdateEmployeeDto;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/employees")
@@ -18,7 +19,7 @@ public interface EmployeeController {
     );
 
     @GetMapping("/current")
-    EmployeeDto getCurrentEmployee() throws AppException;
+    EmployeeDto getCurrentEmployee(Authentication authentication) throws AppException;
 
     @GetMapping("/{id}")
     EmployeeDto getEmployeeById(@PathVariable @NotNull @Min(1) Integer id) throws AppException;

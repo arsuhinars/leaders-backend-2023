@@ -1,13 +1,11 @@
 package org.catncode.leaders_backend.task.service;
 
-import org.catncode.leaders_backend.task.dto.DeliveryTaskManual;
-import org.catncode.leaders_backend.task.dto.DepartureTaskManual;
-import org.catncode.leaders_backend.task.dto.TaskType;
-import org.catncode.leaders_backend.task.dto.TuitionTaskManual;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.catncode.leaders_backend.task.dto.*;
 import org.catncode.leaders_backend.task.entity.TaskManual;
 import org.catncode.leaders_backend.task.exception.TaskManualNotFoundException;
 import org.catncode.leaders_backend.task.repository.TaskManualRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,52 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TaskManualServiceImpl implements TaskManualService{
     private final TaskManualRepository taskManualRepository;
-    private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
-    public TaskManualServiceImpl(TaskManualRepository taskManualRepository, ModelMapper modelMapper) {
+    public TaskManualServiceImpl(TaskManualRepository taskManualRepository, ObjectMapper objectMapper) {
         this.taskManualRepository = taskManualRepository;
-        this.modelMapper = modelMapper;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public DepartureTaskManual getDepartureTaskManual() {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.DEPARTURE).orElseThrow(TaskManualNotFoundException::new);
-        return modelMapper.map(taskManual, DepartureTaskManual.class);
+    public <T extends BaseTaskManual> T getTaskManual(Class<T> type) throws JsonProcessingException {
+        var taskType = TaskManualService.getTypeByManual(type);
+        var taskManual = taskManualRepository.findByType(taskType)
+                .orElseThrow(TaskManualNotFoundException::new);
+
+        return objectMapper.readValue(taskManual.getJsonManual(), type);
     }
 
     @Override
-    public DepartureTaskManual updateDepartureTaskManual(DepartureTaskManual dto) {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.DEPARTURE).orElseThrow(TaskManualNotFoundException::new);
-        modelMapper.map(dto, taskManual);
+    public <T extends BaseTaskManual> T updateTaskManual(Class<T> type, T dto) throws JsonProcessingException {
+        var taskType = TaskManualService.getTypeByManual(type);
+        var taskManual = taskManualRepository.findByType(taskType)
+                .orElseGet(() -> new TaskManual(taskType, ""));
+
+        taskManual.setJsonManual(objectMapper.writeValueAsString(dto));
         taskManualRepository.save(taskManual);
-        return modelMapper.map(taskManual, DepartureTaskManual.class);
-    }
 
-    @Override
-    public TuitionTaskManual getTuitionTaskManual() {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.TUITION).orElseThrow(TaskManualNotFoundException::new);
-        return modelMapper.map(taskManual, TuitionTaskManual.class);
-    }
-
-    @Override
-    public TuitionTaskManual updateTuitionTaskManual(TuitionTaskManual dto) {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.TUITION).orElseThrow(TaskManualNotFoundException::new);
-        modelMapper.map(dto, taskManual);
-        taskManualRepository.save(taskManual);
-        return modelMapper.map(taskManual, TuitionTaskManual.class);
-    }
-
-    @Override
-    public DeliveryTaskManual getDeliveryTaskManual() {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.DELIVERY).orElseThrow(TaskManualNotFoundException::new);
-        return modelMapper.map(taskManual, DeliveryTaskManual.class);
-    }
-
-    @Override
-    public DeliveryTaskManual updateDeliveryTaskManual(DeliveryTaskManual dto) {
-        TaskManual taskManual = taskManualRepository.findByType(TaskType.DELIVERY).orElseThrow(TaskManualNotFoundException::new);
-        modelMapper.map(dto, taskManual);
-        taskManualRepository.save(taskManual);
-        return modelMapper.map(taskManual, DeliveryTaskManual.class);
+        return dto;
     }
 }

@@ -11,3 +11,6 @@ spring:
 
   error:
     include-message: always
+
+leaders_backend:
+  graph_hopper_token: 03f13d82-1328-449a-b6ec-7d547ee548c0

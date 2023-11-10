@@ -29,7 +29,7 @@ public class TaskDto {
     private String agentPointAddress;
 
     @NotNull
-    private LocalDate  creationTime;
+    private LocalDate creationTime;
 
     @NotNull
     private OffsetTime startTime;

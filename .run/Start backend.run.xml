@@ -11,6 +11,7 @@
         <option name="services">
           <list>
             <option value="backend" />
+            <option value="traefik" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.dev.yaml" />
