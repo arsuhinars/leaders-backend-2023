@@ -7,6 +7,7 @@ import org.catncode.leaders_backend.employee.entity.Employee;
 import org.catncode.leaders_backend.task.dto.TaskType;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class Task {
     private LocalDate creationTime;
 
     @Column(nullable = false)
-    private OffsetTime startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
     private Double gettingTime = 0.0;
