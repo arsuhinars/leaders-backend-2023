@@ -8,6 +8,7 @@ import org.catncode.leaders_backend.task.dto.TaskType;
 
 import java.time.LocalDate;
 import java.time.OffsetTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "task", indexes = {
@@ -20,7 +21,6 @@ import java.time.OffsetTime;
 @Setter
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,12 +28,12 @@ public class Task {
     @ToString.Include
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "agent_point_id", nullable = false)
     private AgentPoint agentPoint;
 
@@ -44,23 +44,36 @@ public class Task {
 
     @NonNull
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate creationTime;
 
     @Column(nullable = false)
     private OffsetTime startTime;
 
     @Column(nullable = false)
-    private Double gettingTime;
+    private Double gettingTime = 0.0;
 
     @Column(nullable = false)
-    private Double distanceTo;
+    private Double distanceTo = 0.0;
 
     @Column(nullable = false)
-    private Integer orderNumber;
+    private Integer orderNumber = 0;
 
     @Column(nullable = false)
     private Boolean isArchived = false;
 
-    @OneToOne(mappedBy = "task", cascade = { CascadeType.REMOVE })
+    @OneToOne(mappedBy = "task", cascade = { CascadeType.REMOVE }, fetch = FetchType.LAZY)
     private TaskStatus status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(id, task.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

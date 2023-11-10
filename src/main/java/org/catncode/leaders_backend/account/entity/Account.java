@@ -5,6 +5,8 @@ import lombok.*;
 import org.catncode.leaders_backend.account.dto.AccountRole;
 import org.catncode.leaders_backend.employee.entity.Employee;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "account", indexes = {
         @Index(columnList = "login", unique = true),
@@ -14,7 +16,6 @@ import org.catncode.leaders_backend.employee.entity.Employee;
 @Setter
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,4 +42,17 @@ public class Account {
 
     @OneToOne(mappedBy = "account", cascade = { CascadeType.REMOVE })
     private Employee employee;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -9,6 +9,8 @@ import org.catncode.leaders_backend.employee.dto.UpdateEmployeeDto;
 import org.catncode.leaders_backend.employee.entity.Employee;
 import org.catncode.leaders_backend.employee.exception.EmployeeNotFoundException;
 import org.catncode.leaders_backend.employee.repository.EmployeeRepository;
+import org.catncode.leaders_backend.navigation.service.DistanceMatrixService;
+import org.catncode.leaders_backend.navigation.service.GeocodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeServiceImpl implements EmployeeService {
     private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
+    private final GeocodeService geocodeService;
+    private final DistanceMatrixService distanceMatrixService;
     private final ModelMapper modelMapper;
 
     public EmployeeServiceImpl(
             AccountRepository accountRepository,
             EmployeeRepository employeeRepository,
+            GeocodeService geocodeService,
+            DistanceMatrixService distanceMatrixService,
             ModelMapper modelMapper
     ) {
         this.accountRepository = accountRepository;
         this.employeeRepository = employeeRepository;
+        this.geocodeService = geocodeService;
+        this.distanceMatrixService = distanceMatrixService;
         this.modelMapper = modelMapper;
     }
 
@@ -49,14 +57,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EntityConflictException("Given account must have EMPLOYEE role");
         }
 
+        boolean addressChanged = false;
         Employee employee = account.getEmployee();
         if (employee == null) {
             employee = modelMapper.map(dto, Employee.class);
             employee.setAccount(account);
+            addressChanged = true;
         } else {
+            addressChanged = !employee.getLocationAddress().equals(dto.getLocationAddress());
             modelMapper.map(dto, employee);
         }
 
-        return employeeRepository.save(employee);
+        if (addressChanged) {
+            employee.setLocation(geocodeService.createLocationByAddress(dto.getLocationAddress()));
+        }
+
+        employee = employeeRepository.save(employee);
+
+        if (addressChanged) {
+            distanceMatrixService.recalculateFor(employee.getLocation());
+        }
+
+        return employee;
     }
 }

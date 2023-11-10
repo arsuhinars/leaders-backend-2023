@@ -29,10 +29,14 @@ public class TaskGenerationServiceImpl implements TaskGenerationService {
 
     @Override
     public List<Task> generateTasks() throws Exception {
+        // TODO archive old tasks
+
         var agentPoints = ImmutableList.copyOf(agentPointRepository.findAll());
         var tasks = taskFactory.createFromAgentPoints(agentPoints);
 
         taskRepository.saveAll(tasks);
+
+        // TODO recalculate tasks
 
         return tasks;
     }

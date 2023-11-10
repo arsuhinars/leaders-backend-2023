@@ -7,6 +7,8 @@ import org.catncode.leaders_backend.task.entity.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface TaskService {
     Task create(CreateTaskDto dto) throws AppException;
 
@@ -17,4 +19,10 @@ public interface TaskService {
     Task updateById(UpdateTaskDto dto, Integer id) throws AppException;
 
     void deleteById(Integer id) throws AppException;
+
+    /**
+     * Метод обновления задач у сотрудника:
+     * вычисляет новые расстояния и время прибытия к каждой задаче
+     */
+    void recalculateEmployeeTasks(Integer employeeId);
 }

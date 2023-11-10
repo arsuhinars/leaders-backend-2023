@@ -11,7 +11,10 @@ public class TaskSpecification {
             var predicate = criteriaBuilder.conjunction();
 
             if (employeeId != null) {
-                query.orderBy(criteriaBuilder.asc(root.get("orderNumber")));
+                query.orderBy(
+                        criteriaBuilder.asc(root.get("orderNumber")),
+                        criteriaBuilder.asc(root.get("id"))
+                );
 
                 predicate = criteriaBuilder.and(
                         criteriaBuilder.equal(root.get("employee").get("id"), employeeId),

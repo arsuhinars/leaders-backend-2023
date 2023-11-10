@@ -3,9 +3,13 @@ package org.catncode.leaders_backend.agent_point.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.catncode.leaders_backend.agent_point.dto.AgentPointJoinTime;
+import org.catncode.leaders_backend.navigation.entity.Location;
 import org.catncode.leaders_backend.task.entity.Task;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -15,7 +19,6 @@ import java.util.Set;
 @Setter
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode
 public class AgentPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,4 +53,22 @@ public class AgentPoint {
 
     @OneToMany(mappedBy = "agentPoint", cascade = { CascadeType.REMOVE })
     private Set<Task> taskSet = new HashSet<>();
+
+    @NonNull
+    @OneToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AgentPoint that = (AgentPoint) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
