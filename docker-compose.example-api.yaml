@@ -3,6 +3,10 @@ services:
   whoami:
     image: "traefik/whoami"
     labels:
-      - "traefik.http.routers.whoami.rule=Host(`127.0.0.1`)"
+      # для запуска на монолите удобно использовать строку ниже
+      # - "traefik.http.routers.whoami.rule=Host(`api.localhost`)"
+      # тогда запрос к api через traefik будет api.localhost:80
+      - "traefik.http.routers.whoami.rule=Host(`api.localhost`)"
+      #- "traefik.http.routers.whoami.rule=Host(`127.0.0.1`)"
     expose:
       - "80"

@@ -1,6 +1,8 @@
 ## Запуск
 1) Скачиваем файл `south-fed-district-latest.osm.pbf` с сайта https://download.geofabrik.de/russia/south-fed-district.html
    И кладем в папку resources по адресу "src/main/resources/south-fed-district-latest.osm.pbf"
+Примечание: для работы приложения по всей России, нужно скачать карту всей России.  
+Можно также ограничиться нужным вам регионом.
 ## Запуск с traefik
 1) распаковываем контейнеры на разных машинах: frontend, apiLoadBalancer, api1, api2, ..., apin, db.  
     Количество frontend серверов тоже можно размножить  
