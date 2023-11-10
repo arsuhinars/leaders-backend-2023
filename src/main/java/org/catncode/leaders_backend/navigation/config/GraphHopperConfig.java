@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Map;
-
 @Configuration
 public class GraphHopperConfig {
     public static final String DEFAULT_PROFILE_NAME = "car";
