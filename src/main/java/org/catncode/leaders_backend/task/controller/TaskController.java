@@ -15,19 +15,19 @@ public interface TaskController {
     DepartureTaskManual getDepartureTaskManual() throws Exception;
 
     @PutMapping("/departure/manual")
-    DepartureTaskManual updateDepartureTaskManual(DepartureTaskManual schema) throws Exception;
+    DepartureTaskManual updateDepartureTaskManual(@Valid @RequestBody DepartureTaskManual schema) throws Exception;
 
     @GetMapping("/tuition/manual")
     TuitionTaskManual getTuitionTaskManual() throws Exception;
 
     @PutMapping("/tuition/manual")
-    TuitionTaskManual updateTuitionTaskManual(TuitionTaskManual schema) throws Exception;
+    TuitionTaskManual updateTuitionTaskManual(@Valid @RequestBody TuitionTaskManual schema) throws Exception;
 
     @GetMapping("/delivery/manual")
     DeliveryTaskManual getDeliveryTaskManual() throws Exception;
 
     @PutMapping("/delivery/manual")
-    DeliveryTaskManual updateDeliveryTaskManual(DeliveryTaskManual schema) throws Exception;
+    DeliveryTaskManual updateDeliveryTaskManual(@Valid @RequestBody DeliveryTaskManual schema) throws Exception;
 
     @PostMapping("/generate")
     void generateTasks() throws Exception;

@@ -8,8 +8,6 @@ import org.catncode.leaders_backend.navigation.dto.PathDistance;
 import org.catncode.leaders_backend.navigation.entity.Location;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-
 @Service
 public class GraphHopperRoutingService implements RoutingService {
     private final GraphHopper graphHopper;
@@ -29,7 +27,9 @@ public class GraphHopperRoutingService implements RoutingService {
 
         var response = graphHopper.route(request);
         if (response.hasErrors()) {
-            throw new ApiException(response.getErrors().toString());
+            var error = response.getErrors().toString();
+            System.out.println("GraphHopper routing error: " + error);
+            throw new ApiException(error);
         }
 
         var path = response.getBest();

@@ -32,12 +32,10 @@ public class TaskFactory {
             if (departure.checkCondition(agentPoint)) {
                 tasks.add(new Task(agentPoint, TaskType.DEPARTURE, nowDate));
             }
-
-            if (tuition.checkCondition(agentPoint)) {
+            else if (tuition.checkCondition(agentPoint)) {
                 tasks.add(new Task(agentPoint, TaskType.TUITION, nowDate));
             }
-
-            if (delivery.checkCondition(agentPoint)) {
+            else if (delivery.checkCondition(agentPoint)) {
                 tasks.add(new Task(agentPoint, TaskType.DELIVERY, nowDate));
             }
         }
