@@ -10,6 +10,7 @@ import org.catncode.leaders_backend.account.dto.UpdateAccountDto;
 import org.catncode.leaders_backend.account.dto.UpdateAccountPasswordDto;
 import org.catncode.leaders_backend.core.dto.Pagination;
 import org.catncode.leaders_backend.core.exception.AppException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/accounts")
@@ -53,5 +54,5 @@ public interface AccountController {
     );
 
     @GetMapping("/current")
-    AccountDto getCurrentAccount();
+    AccountDto getCurrentAccount(Authentication authentication);
 }
