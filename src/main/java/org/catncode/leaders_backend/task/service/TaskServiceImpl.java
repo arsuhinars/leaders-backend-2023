@@ -56,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
         task.setCreationTime(LocalDate.now());
 
         taskRepository.save(task);
-        recalculateEmployeeTasks(employee.getId());
+        recalculateEmployeeTasks(employee.getAccount().getId());
 
         return taskRepository.findById(task.getId()).orElseThrow();
     }
