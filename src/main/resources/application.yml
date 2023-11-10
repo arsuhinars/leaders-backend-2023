@@ -14,3 +14,8 @@ spring:
 
   jpa:
     open-in-view: false
+
+leaders_backend:
+  osm_file_path: ./graph_hopper/south-fed-district-latest.osm.pbf
+  graph_hopper_location: ./graph_hopper/cache
+  graph_hopper_url: https://graphhopper.com/api/1
