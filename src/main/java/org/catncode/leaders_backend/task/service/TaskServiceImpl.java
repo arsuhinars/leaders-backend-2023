@@ -16,7 +16,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
 
@@ -29,11 +33,14 @@ public class TaskServiceImpl implements TaskService {
     private final DistanceMatrixService distanceMatrixService;
     private final ModelMapper modelMapper;
 
+    private final TransactionTemplate transactionTemplate;
+
     public TaskServiceImpl(
             TaskRepository taskRepository,
             EmployeeRepository employeeRepository,
             AgentPointRepository agentPointRepository,
             DistanceMatrixService distanceMatrixService,
+            PlatformTransactionManager transactionManager,
             ModelMapper modelMapper
     ) {
         this.taskRepository = taskRepository;
@@ -41,6 +48,8 @@ public class TaskServiceImpl implements TaskService {
         this.agentPointRepository = agentPointRepository;
         this.distanceMatrixService = distanceMatrixService;
         this.modelMapper = modelMapper;
+
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -55,7 +64,11 @@ public class TaskServiceImpl implements TaskService {
         task.setEmployee(employee);
         task.setCreationTime(LocalDate.now());
 
-        taskRepository.save(task);
+        transactionTemplate.execute(status -> {
+            taskRepository.save(task);
+            return task.getId();
+        });
+
         recalculateEmployeeTasks(employee.getAccount().getId());
 
         return taskRepository.findById(task.getId()).orElseThrow();
@@ -123,6 +136,11 @@ public class TaskServiceImpl implements TaskService {
             task.setGettingTime(path.getHours());
         }
 
-        taskRepository.saveAll(tasks);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                taskRepository.saveAll(tasks);
+            }
+        });
     }
 }

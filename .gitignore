@@ -31,4 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
-/graph_hopper/cache/
+
+graph_hopper/

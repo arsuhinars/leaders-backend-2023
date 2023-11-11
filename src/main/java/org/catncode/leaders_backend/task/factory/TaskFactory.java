@@ -21,9 +21,9 @@ public class TaskFactory {
     }
 
     public List<Task> createFromAgentPoints(List<AgentPoint> agentPoints) throws Exception {
-        var departure = taskManualService.getTaskManual(DepartureTaskManual.class);
-        var tuition = taskManualService.getTaskManual(TuitionTaskManual.class);
-        var delivery = taskManualService.getTaskManual(DepartureTaskManual.class);
+        var departure = taskManualService.getByClass(DepartureTaskManual.class);
+        var tuition = taskManualService.getByClass(TuitionTaskManual.class);
+        var delivery = taskManualService.getByClass(DepartureTaskManual.class);
 
         var nowDate = LocalDate.now();
 
