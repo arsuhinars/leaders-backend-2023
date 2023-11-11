@@ -41,6 +41,7 @@ public class DistanceMatrixServiceImpl implements DistanceMatrixService {
 
         var distance = distanceMatrix.get(new LocationPair(a, b));
         if (distance == null) {
+            System.out.println("distance not found " + a + " " + b);
             throw new PathNotFoundException();
         }
 
@@ -53,7 +54,7 @@ public class DistanceMatrixServiceImpl implements DistanceMatrixService {
 
         distanceMatrix = new HashMap<>();
         for (int i = 0; i < locations.size(); ++i) {
-            for (int j = i; j < locations.size(); ++j) {
+            for (int j = 0; j < locations.size(); ++j) {
                 var pair = new LocationPair(locations.get(i), locations.get(j));
                 var path = routingService.findPath(pair.getA(), pair.getB());
 

@@ -11,6 +11,9 @@ services:
       start_period: 5s
     volumes:
       - db_data:/var/lib/postgresql/data/
+      - type: bind
+        source: ./dataset.sql
+        target: /docker-entrypoint-initdb.d/dataset.sql
     secrets:
       - postgres-user
       - postgres-password
