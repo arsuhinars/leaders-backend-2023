@@ -49,6 +49,7 @@ public class SecurityConfig {
         registry
                 .requestMatchers(HttpMethod.GET, "/status").permitAll()
 
+                .requestMatchers(HttpMethod.GET, "/accounts/current").authenticated()
                 .requestMatchers(HttpMethod.POST, "/accounts").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.GET, "/accounts/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.PUT, "/accounts/*").hasAuthority(adminAuthority)
@@ -58,7 +59,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/accounts/login/*").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.PUT, "/accounts/*/password").hasAuthority(adminAuthority)
                 .requestMatchers(HttpMethod.GET, "/accounts/all").hasAuthority(adminAuthority)
-                .requestMatchers(HttpMethod.GET, "/accounts/current").authenticated()
 
                 .requestMatchers(HttpMethod.POST, "/agent_points").hasAnyAuthority(adminAuthority, managerAuthority)
                 .requestMatchers(HttpMethod.GET, "/agent_points/all").hasAnyAuthority(adminAuthority, managerAuthority)
