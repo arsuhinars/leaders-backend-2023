@@ -1,6 +1,6 @@
 package org.catncode.leaders_backend.task.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.catncode.leaders_backend.core.exception.ApiException;
 import org.catncode.leaders_backend.task.dto.*;
 
 public interface TaskManualService {
@@ -16,7 +16,9 @@ public interface TaskManualService {
         throw new IllegalArgumentException();
     }
 
-    <T extends BaseTaskManual> T getTaskManual(Class<T> type) throws JsonProcessingException;
+    BaseTaskManual getByType(TaskType type) throws ApiException;
 
-    <T extends BaseTaskManual> T updateTaskManual(Class<T> type, T dto) throws JsonProcessingException;
+    <T extends BaseTaskManual> T getByClass(Class<T> type) throws ApiException;
+
+    <T extends BaseTaskManual> T updateByClass(Class<T> type, T dto) throws ApiException;
 }

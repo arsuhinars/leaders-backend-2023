@@ -32,11 +32,9 @@ public class TaskDto {
     private String agentPointAddress;
 
     @NotNull
-    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate creationTime;
 
     @NotNull
-    @JsonSerialize(using = LocalTimeSerializer.class)
     private LocalTime startTime;
 
     @NotNull

@@ -17,7 +17,7 @@ public class TaskSpecification {
                 );
 
                 predicate = criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get("employee").get("id"), employeeId),
+                        criteriaBuilder.equal(root.get("employee").get("account").get("id"), employeeId),
                         predicate
                 );
             }

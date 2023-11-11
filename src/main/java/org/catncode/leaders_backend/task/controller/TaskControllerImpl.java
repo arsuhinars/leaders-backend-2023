@@ -46,32 +46,32 @@ public class TaskControllerImpl implements TaskController {
 
     @Override
     public DepartureTaskManual getDepartureTaskManual() throws Exception {
-        return taskManualService.getTaskManual(DepartureTaskManual.class);
+        return taskManualService.getByClass(DepartureTaskManual.class);
     }
 
     @Override
     public DepartureTaskManual updateDepartureTaskManual(DepartureTaskManual schema) throws Exception {
-        return taskManualService.updateTaskManual(DepartureTaskManual.class, schema);
+        return taskManualService.updateByClass(DepartureTaskManual.class, schema);
     }
 
     @Override
     public TuitionTaskManual getTuitionTaskManual() throws Exception {
-        return taskManualService.getTaskManual(TuitionTaskManual.class);
+        return taskManualService.getByClass(TuitionTaskManual.class);
     }
 
     @Override
     public TuitionTaskManual updateTuitionTaskManual(TuitionTaskManual schema) throws Exception {
-        return taskManualService.updateTaskManual(TuitionTaskManual.class, schema);
+        return taskManualService.updateByClass(TuitionTaskManual.class, schema);
     }
 
     @Override
     public DeliveryTaskManual getDeliveryTaskManual() throws Exception {
-        return taskManualService.getTaskManual(DeliveryTaskManual.class);
+        return taskManualService.getByClass(DeliveryTaskManual.class);
     }
 
     @Override
     public DeliveryTaskManual updateDeliveryTaskManual(DeliveryTaskManual schema) throws Exception {
-        return taskManualService.updateTaskManual(DeliveryTaskManual.class, schema);
+        return taskManualService.updateByClass(DeliveryTaskManual.class, schema);
     }
 
     @Override

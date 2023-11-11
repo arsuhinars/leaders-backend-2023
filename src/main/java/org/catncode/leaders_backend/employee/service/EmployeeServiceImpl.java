@@ -15,7 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @Transactional
@@ -26,11 +28,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DistanceMatrixService distanceMatrixService;
     private final ModelMapper modelMapper;
 
+    private final TransactionTemplate transactionTemplate;
+
     public EmployeeServiceImpl(
             AccountRepository accountRepository,
             EmployeeRepository employeeRepository,
             GeocodeService geocodeService,
             DistanceMatrixService distanceMatrixService,
+            PlatformTransactionManager transactionManager,
             ModelMapper modelMapper
     ) {
         this.accountRepository = accountRepository;
@@ -38,6 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.geocodeService = geocodeService;
         this.distanceMatrixService = distanceMatrixService;
         this.modelMapper = modelMapper;
+
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -58,12 +65,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         boolean addressChanged = false;
-        Employee employee = account.getEmployee();
-        if (employee == null) {
+        Employee employee;
+        if (account.getEmployee() == null) {
             employee = modelMapper.map(dto, Employee.class);
             employee.setAccount(account);
             addressChanged = true;
         } else {
+            employee = account.getEmployee();
             addressChanged = !employee.getLocationAddress().equals(dto.getLocationAddress());
             modelMapper.map(dto, employee);
         }
@@ -72,7 +80,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setLocation(geocodeService.createLocationByAddress(dto.getLocationAddress()));
         }
 
-        employee = employeeRepository.save(employee);
+        transactionTemplate.execute(status -> {
+            employeeRepository.save(employee);
+            return employee.getId();
+        });
 
         if (addressChanged) {
             distanceMatrixService.recalculateFor(employee.getLocation());

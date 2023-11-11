@@ -13,7 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Service
 @Transactional
@@ -23,17 +25,22 @@ public class AgentPointServiceImpl implements AgentPointService {
     private final DistanceMatrixService distanceMatrixService;
     private final ModelMapper modelMapper;
 
+    private final TransactionTemplate transactionTemplate;
+
     public AgentPointServiceImpl(
             LocationRepository locationRepository,
             AgentPointRepository agentPointRepository,
             GeocodeService geocodeService,
             DistanceMatrixService distanceMatrixService,
+            PlatformTransactionManager transactionManager,
             ModelMapper modelMapper
     ) {
         this.agentPointRepository = agentPointRepository;
         this.geocodeService = geocodeService;
         this.distanceMatrixService = distanceMatrixService;
         this.modelMapper = modelMapper;
+
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -42,7 +49,11 @@ public class AgentPointServiceImpl implements AgentPointService {
         agentPoint.setLocation(
                 geocodeService.createLocationByAddress(dto.getAddress())
         );
-        agentPoint = agentPointRepository.save(agentPoint);
+
+        transactionTemplate.execute(status -> {
+            agentPointRepository.save(agentPoint);
+            return agentPoint.getId();
+        });
 
         distanceMatrixService.recalculateFor(agentPoint.getLocation());
 
@@ -70,7 +81,11 @@ public class AgentPointServiceImpl implements AgentPointService {
             );
         }
         modelMapper.map(dto, agentPoint);
-        agentPoint = agentPointRepository.save(agentPoint);
+
+        transactionTemplate.execute(status -> {
+            agentPointRepository.save(agentPoint);
+            return agentPoint.getId();
+        });
 
         if (addressChanged) {
             distanceMatrixService.recalculateFor(agentPoint.getLocation());
