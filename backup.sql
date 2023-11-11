@@ -369,6 +369,7 @@ COPY public.task (id, creation_time, distance_to, getting_time, is_archived, ord
 COPY public.task_manual (id, json_manual, type) FROM stdin;
 52	{"priority":"LOW","performTime":2.0,"requiredEmployeeGrade":"MIDDLE","issuedCardsMinDaysCount1":5,"issuedCardsMinDaysCount2":3}	DEPARTURE
 53	{"priority":"MIDDLE","performTime":2.0,"requiredEmployeeGrade":"SENIOR","approvedAppsPercentage":1.0,"issuedCardsCount":6}	TUITION
+102	{"priority":"LOW","performTime":5.0,"requiredEmployeeGrade":"JUNIOR","joinTime":"YESTERDAY"}	DELIVERY
 \.
 
 
@@ -412,7 +413,7 @@ SELECT pg_catalog.setval('public.location_seq', 201, true);
 -- Name: task_manual_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public.task_manual_seq', 101, true);
+SELECT pg_catalog.setval('public.task_manual_seq', 151, true);
 
 
 --
