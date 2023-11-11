@@ -30,7 +30,7 @@ CREATE TABLE public.account (
     login character varying(255) NOT NULL,
     password_hash character varying(255) NOT NULL,
     role character varying(255) NOT NULL,
-    CONSTRAINT account_role_check CHECK (((role)::text = ANY ((ARRAY['ADMIN'::character varying, 'MANAGER'::character varying, 'EMPLOYEE'::character varying])::text[])))
+    CONSTRAINT account_role_check CHECK (((role)::text = ANY (ARRAY[('ADMIN'::character varying)::text, ('MANAGER'::character varying)::text, ('EMPLOYEE'::character varying)::text])))
 );
 
 
@@ -63,7 +63,7 @@ CREATE TABLE public.agent_point (
     join_time character varying(255) NOT NULL,
     materials_delivered boolean NOT NULL,
     location_id integer NOT NULL,
-    CONSTRAINT agent_point_join_time_check CHECK (((join_time)::text = ANY ((ARRAY['YESTERDAY'::character varying, 'LONG_AGO'::character varying])::text[])))
+    CONSTRAINT agent_point_join_time_check CHECK (((join_time)::text = ANY (ARRAY[('YESTERDAY'::character varying)::text, ('LONG_AGO'::character varying)::text])))
 );
 
 
@@ -93,7 +93,7 @@ CREATE TABLE public.employee (
     location_address character varying(255) NOT NULL,
     account_id integer NOT NULL,
     location_id integer NOT NULL,
-    CONSTRAINT employee_grade_check CHECK (((grade)::text = ANY ((ARRAY['JUNIOR'::character varying, 'MIDDLE'::character varying, 'SENIOR'::character varying])::text[])))
+    CONSTRAINT employee_grade_check CHECK (((grade)::text = ANY (ARRAY[('JUNIOR'::character varying)::text, ('MIDDLE'::character varying)::text, ('SENIOR'::character varying)::text])))
 );
 
 
@@ -155,7 +155,7 @@ CREATE TABLE public.task (
     type character varying(255) NOT NULL,
     agent_point_id integer NOT NULL,
     employee_id integer,
-    CONSTRAINT task_type_check CHECK (((type)::text = ANY ((ARRAY['DEPARTURE'::character varying, 'TUITION'::character varying, 'DELIVERY'::character varying])::text[])))
+    CONSTRAINT task_type_check CHECK (((type)::text = ANY (ARRAY[('DEPARTURE'::character varying)::text, ('TUITION'::character varying)::text, ('DELIVERY'::character varying)::text])))
 );
 
 
@@ -169,7 +169,7 @@ CREATE TABLE public.task_manual (
     id integer NOT NULL,
     json_manual character varying(255) NOT NULL,
     type character varying(255) NOT NULL,
-    CONSTRAINT task_manual_type_check CHECK (((type)::text = ANY ((ARRAY['DEPARTURE'::character varying, 'TUITION'::character varying, 'DELIVERY'::character varying])::text[])))
+    CONSTRAINT task_manual_type_check CHECK (((type)::text = ANY (ARRAY[('DEPARTURE'::character varying)::text, ('TUITION'::character varying)::text, ('DELIVERY'::character varying)::text])))
 );
 
 
@@ -253,7 +253,6 @@ COPY public.account (id, full_name, login, password_hash, role) FROM stdin;
 --
 
 COPY public.agent_point (id, address, approved_apps_count, card_issuance_days_passed, issued_cards_count, join_time, materials_delivered, location_id) FROM stdin;
-54	ул. им. Дзержинского, д. 100	9	3	1	LONG_AGO	t	104
 57	Россия, Краснодар, Максима Горького, 128	15	3	3	LONG_AGO	t	107
 58	Россия, Краснодар, Дзержинского, 100	9	3	1	LONG_AGO	t	108
 59	Россия, Краснодар, ул. Красноармейская, д. 126	38	0	23	LONG_AGO	t	109
@@ -266,8 +265,6 @@ COPY public.agent_point (id, address, approved_apps_count, card_issuance_days_pa
 66	Россия, Краснодар, ст-ца. Елизаветинская, ул. Широкая, д. 260	29	15	15	LONG_AGO	t	116
 67	Россия, Краснодар, ул. им. Тургенева, д. 174, 1 этаж	0	0	0	LONG_AGO	f	117
 68	Россия, Краснодар, ул. Ставропольская, д. 140	0	0	0	YESTERDAY	f	118
-69	Россия, Краснодар, ст-ца. Елизаветинская, ул. Широкая, д. 260	29	15	15	LONG_AGO	t	119
-70	Россия, Краснодар, ул. им. Тургенева, д. 174, 1 этаж	0	0	0	YESTERDAY	f	120
 71	Россия, Краснодар, ул. Уральская, д. 162	21	4	5	LONG_AGO	t	121
 72	Россия, Краснодар, ул. Уральская, д. 79/1	5	0	0	YESTERDAY	f	122
 73	Россия, Краснодар, ул. им. Селезнева, д. 197/5	14	7	3	LONG_AGO	t	123
@@ -327,7 +324,6 @@ COPY public.location (id, latitude, longitude) FROM stdin;
 57	45.0145989	39.0624348
 58	45.05375615	38.94197325660306
 59	45.05375615	38.94197325660306
-104	45.100081200000005	38.98668624016295
 107	46.06770615	40.88417631344247
 108	45.1000749	38.9850469
 109	50.7773334	41.991432758936824
@@ -340,8 +336,6 @@ COPY public.location (id, latitude, longitude) FROM stdin;
 116	45.049406250000004	38.803343999999996
 117	45.0697697	38.970178925216445
 118	45.0689905	39.1745253
-119	45.049406250000004	38.803343999999996
-120	45.0697697	38.970178925216445
 121	45.037536599999996	39.09171515
 122	45.0344911	39.052518
 123	45.0165901	39.0541191
